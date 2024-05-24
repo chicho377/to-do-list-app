@@ -2,6 +2,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const taskForm = document.getElementById('task-form');
     const taskInput = document.getElementById('task-input');
     const taskList = document.getElementById('task-list');
+    const notificationSound = new Audio('notification.mp3'); // Asegúrate de tener un archivo de sonido en tu proyecto
 
     taskForm.addEventListener('submit', addTask);
     taskList.addEventListener('click', manageTask);
@@ -12,10 +13,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (taskText === '') return;
 
         const li = document.createElement('li');
-        li.appendChild(document.createTextNode(taskText));
-        const deleteBtn = document.createElement('button');
-        deleteBtn.appendChild(document.createTextNode('Eliminar'));
-        li.appendChild(deleteBtn);
+        li.innerHTML = `<input type="checkbox" class="checkbox"> ${taskText} <button>Eliminar</button>`;
         taskList.appendChild(li);
 
         storeTaskInLocalStorage(taskText);
@@ -27,9 +25,15 @@ document.addEventListener('DOMContentLoaded', () => {
             const li = e.target.parentElement;
             taskList.removeChild(li);
             removeTaskFromLocalStorage(li);
-        } else {
-            e.target.classList.toggle('completed');
-            toggleCompleteInLocalStorage(e.target);
+        } else if (e.target.classList.contains('checkbox')) {
+            const li = e.target.parentElement;
+            li.classList.toggle('completed');
+            if (li.classList.contains('completed')) {
+                notificationSound.play();
+                showNotification('Tarea completada');
+                taskList.removeChild(li);
+                removeTaskFromLocalStorage(li);
+            }
         }
     }
 
@@ -51,28 +55,25 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function removeTaskFromLocalStorage(taskItem) {
         let tasks = getTasksFromLocalStorage();
-        tasks = tasks.filter(task => task.text !== taskItem.textContent.replace('Eliminar', '').trim());
+        tasks = tasks.filter(task => task.text !== taskItem.textContent.trim());
         localStorage.setItem('tasks', JSON.stringify(tasks));
     }
 
-    function toggleCompleteInLocalStorage(taskItem) {
-        let tasks = getTasksFromLocalStorage();
-        tasks.forEach(task => {
-            if (task.text === taskItem.textContent.replace('Eliminar', '').trim()) {
-                task.completed = !task.completed;
-            }
-        });
-        localStorage.setItem('tasks', JSON.stringify(tasks));
+    function showNotification(message) {
+        const notification = document.createElement('div');
+        notification.className = 'notification';
+        notification.innerText = message;
+        document.body.appendChild(notification);
+        setTimeout(() => {
+            notification.remove();
+        }, 3000);
     }
 
     function loadTasks() {
         let tasks = getTasksFromLocalStorage();
         tasks.forEach(task => {
             const li = document.createElement('li');
-            li.appendChild(document.createTextNode(task.text));
-            const deleteBtn = document.createElement('button');
-            deleteBtn.appendChild(document.createTextNode('Eliminar'));
-            li.appendChild(deleteBtn);
+            li.innerHTML = `<input type="checkbox" class="checkbox" ${task.completed ? 'checked' : ''}> ${task.text} <button>Eliminar</button>`;
             if (task.completed) {
                 li.classList.add('completed');
             }
