@@ -46,17 +46,20 @@ document.addEventListener('DOMContentLoaded', () => {
     function createTaskElement(task) {
         notificationAdd.play();
         const li = document.createElement('li');
-        li.className = task.priority;
+        li.className = `${task.priority} collapsed`;
         li.innerHTML = `
-            <div class="task-details">
+            <div class="task-header">
                 <input type="checkbox" class="checkbox"> 
                 <span class="task-text">${task.text}</span>
+                <button class="expand">🔽</button>
+            </div>
+            <div class="task-details">
                 ${task.dueDate ? `<span class="due-date">Fecha: ${task.dueDate}</span>` : ''}
                 ${task.dueTime ? `<span class="due-time">Hora: ${task.dueTime}</span>` : ''}
                 ${task.priority ? `<span class="priority">Prioridad: ${task.priority}</span>` : ''}
                 ${task.category ? `<span class="category">Categoría: ${task.category}</span>` : ''}
             </div>
-            <div>
+            <div class="task-actions">
                 <button class="edit">✏️</button>
                 <button class="delete">🗑️</button>
             </div>
@@ -76,6 +79,9 @@ document.addEventListener('DOMContentLoaded', () => {
                 showNotificationDelete('Tarea eliminada');
             } else if (e.target.classList.contains('edit')) {
                 editTask(li);
+            } else if (e.target.classList.contains('expand')) {
+                li.classList.toggle('collapsed');
+                e.target.textContent = li.classList.contains('collapsed') ? '🔽' : '🔼';
             }
         } else if (e.target.classList.contains('checkbox')) {
             li.classList.toggle('completed');
@@ -85,6 +91,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 notificationComplete.play();
                 showNotification('Tarea completada');
                 setTimeout(() => taskList.removeChild(li), 1000);
+                removeTaskFromLocalStorage(taskText);
             }
         }
     }
