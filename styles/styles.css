@@ -74,16 +74,26 @@ li {
     border-radius: 4px;
 }
 
+.notificationDelete {
+    position: fixed;
+    top: 10px;
+    right: 10px;
+    background-color: #cc5c61;
+    color: white;
+    padding: 10px;
+    border-radius: 4px;
+}
+
 /* Estilos según prioridad */
-.low {
+.Baja{
     border-left: 5px solid green;
 }
 
-.medium {
+.Media {
     border-left: 5px solid orange;
 }
 
-.high {
+.Alta {
     border-left: 5px solid red;
 }
 

@@ -34,7 +34,7 @@ document.addEventListener('DOMContentLoaded', () => {
         storeTaskInLocalStorage(task);
         taskInput.value = '';
         dueDateInput.value = '';
-        priorityInput.value = 'low';
+        priorityInput.value = 'Baja';
         categoryInput.value = '';
     }
 
@@ -66,7 +66,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 taskList.removeChild(li);
                 removeTaskFromLocalStorage(taskText);
                 notificationSound2.play();
-                showNotification('Tarea eliminada');
+                showNotificationDelete('Tarea eliminada');
             } else if (e.target.classList.contains('edit')) {
                 editTask(li);
             }
@@ -131,6 +131,16 @@ document.addEventListener('DOMContentLoaded', () => {
     function showNotification(message) {
         const notification = document.createElement('div');
         notification.className = 'notification';
+        notification.innerText = message;
+        document.body.appendChild(notification);
+        setTimeout(() => {
+            notification.remove();
+        }, 3000);
+    }
+
+    function showNotificationDelete(message) {
+        const notification = document.createElement('div');
+        notification.className = 'notificationDelete';
         notification.innerText = message;
         document.body.appendChild(notification);
         setTimeout(() => {
