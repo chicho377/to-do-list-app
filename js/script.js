@@ -1,9 +1,12 @@
 document.addEventListener('DOMContentLoaded', () => {
     const taskForm = document.getElementById('task-form');
     const taskInput = document.getElementById('task-input');
+    const dueDateInput = document.getElementById('due-date-input');
+    const priorityInput = document.getElementById('priority-input');
+    const categoryInput = document.getElementById('category-input');
     const taskList = document.getElementById('task-list');
     const notificationSound = new Audio('/notifications/notification.mp3');
-    const notificationSound2 = new Audio('/notifications/notificatioDelete.mp3');  
+    const notificationSound2 = new Audio('/notifications/notificatioDelete.mp3'); 
 
     taskForm.addEventListener('submit', addTask);
     taskList.addEventListener('click', manageTask);
@@ -11,36 +14,84 @@ document.addEventListener('DOMContentLoaded', () => {
     function addTask(e) {
         e.preventDefault();
         const taskText = taskInput.value;
+        const dueDate = dueDateInput.value;
+        const priority = priorityInput.value;
+        const category = categoryInput.value;
+
         if (taskText === '') return;
 
-        const li = document.createElement('li');
-        li.innerHTML = `<input type="checkbox" class="checkbox"> ${taskText} <button>Eliminar</button>`;
+        const task = {
+            text: taskText,
+            dueDate: dueDate,
+            priority: priority,
+            category: category,
+            completed: false
+        };
+
+        const li = createTaskElement(task);
         taskList.appendChild(li);
 
-        storeTaskInLocalStorage({ text: taskText, completed: false });
+        storeTaskInLocalStorage(task);
         taskInput.value = '';
+        dueDateInput.value = '';
+        priorityInput.value = 'low';
+        categoryInput.value = '';
+    }
+
+    function createTaskElement(task) {
+        const li = document.createElement('li');
+        li.innerHTML = `
+            <div>
+                <input type="checkbox" class="checkbox"> 
+                <span class="task-text">${task.text}</span>
+                ${task.dueDate ? `<span class="due-date">${task.dueDate}</span>` : ''}
+                ${task.priority ? `<span class="priority">${task.priority}</span>` : ''}
+                ${task.category ? `<span class="category">${task.category}</span>` : ''}
+            </div>
+            <div>
+                <button class="edit">Editar</button>
+                <button class="delete">Eliminar</button>
+            </div>
+        `;
+        return li;
     }
 
     function manageTask(e) {
+        const li = e.target.closest('li');
+        const taskText = li.querySelector('.task-text').textContent.trim();
+
         if (e.target.tagName === 'BUTTON') {
-            const li = e.target.parentElement;
-            taskList.removeChild(li);
-            removeTaskFromLocalStorage(li.firstChild.nextSibling.textContent.trim());
-            notificationSound2.play();
-            showNotification('Tarea eliminada');
-        } else if (e.target.classList.contains('checkbox')) {
-            const li = e.target.parentElement;
-            li.classList.toggle('completed');
-            const taskText = li.firstChild.nextSibling.textContent.trim();
-            if (li.classList.contains('completed')) {
-                notificationSound.play();
-                showNotification('Tarea completada');
+            if (e.target.classList.contains('delete')) {
                 taskList.removeChild(li);
                 removeTaskFromLocalStorage(taskText);
-            } else {
-                updateTaskInLocalStorage(taskText, false);
+                notificationSound2.play();
+                showNotification('Tarea eliminada');
+            } else if (e.target.classList.contains('edit')) {
+                editTask(li);
+            }
+        } else if (e.target.classList.contains('checkbox')) {
+            li.classList.toggle('completed');
+            const completed = li.classList.contains('completed');
+            updateTaskInLocalStorage(taskText, { completed });
+            if (completed) {
+                notificationSound.play();
+                showNotification('Tarea completada');
+                setTimeout(() => taskList.removeChild(li), 1000);
             }
         }
+    }
+
+    function editTask(li) {
+        const taskText = li.querySelector('.task-text').textContent.trim();
+        const task = getTasksFromLocalStorage().find(t => t.text === taskText);
+
+        taskInput.value = task.text;
+        dueDateInput.value = task.dueDate;
+        priorityInput.value = task.priority;
+        categoryInput.value = task.category;
+
+        taskList.removeChild(li);
+        removeTaskFromLocalStorage(taskText);
     }
 
     function storeTaskInLocalStorage(task) {
@@ -65,11 +116,11 @@ document.addEventListener('DOMContentLoaded', () => {
         localStorage.setItem('tasks', JSON.stringify(tasks));
     }
 
-    function updateTaskInLocalStorage(taskText, completed) {
+    function updateTaskInLocalStorage(taskText, updates) {
         let tasks = getTasksFromLocalStorage();
         tasks = tasks.map(task => {
             if (task.text === taskText) {
-                task.completed = completed;
+                return { ...task, ...updates };
             }
             return task;
         });
@@ -89,11 +140,12 @@ document.addEventListener('DOMContentLoaded', () => {
     function loadTasks() {
         let tasks = getTasksFromLocalStorage();
         tasks.forEach(task => {
-            if (!task.completed) {  // Solo cargar tareas que no estén completadas
-                const li = document.createElement('li');
-                li.innerHTML = `<input type="checkbox" class="checkbox"> ${task.text} <button>Eliminar</button>`;
-                taskList.appendChild(li);
+            const li = createTaskElement(task);
+            if (task.completed) {
+                li.classList.add('completed');
+                li.querySelector('.checkbox').checked = true;
             }
+            taskList.appendChild(li);
         });
     }
 
