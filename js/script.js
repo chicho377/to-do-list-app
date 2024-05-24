@@ -2,7 +2,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const taskForm = document.getElementById('task-form');
     const taskInput = document.getElementById('task-input');
     const taskList = document.getElementById('task-list');
-    const notificationSound = new Audio('notification.mp3'); 
+    const notificationSound = new Audio('/notifications/notification.mp3');
+    const notificationSound2 = new Audio('/notifications/notificatioDelete.mp3');  
 
     taskForm.addEventListener('submit', addTask);
     taskList.addEventListener('click', manageTask);
@@ -25,7 +26,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const li = e.target.parentElement;
             taskList.removeChild(li);
             removeTaskFromLocalStorage(li.firstChild.nextSibling.textContent.trim());
-            notificationSound.play();
+            notificationSound2.play();
             showNotification('Tarea eliminada');
         } else if (e.target.classList.contains('checkbox')) {
             const li = e.target.parentElement;
