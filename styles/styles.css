@@ -6,6 +6,14 @@ body {
     align-items: center;
     height: 100vh;
     margin: 0;
+    position: relative; /* Añadir posición relativa para que particles.js ocupe toda la pantalla */
+}
+
+#particles-js {
+    position: absolute;
+    width: 100%;
+    height: 98%;
+    background-color: #f4f4f4;
 }
 
 .container {
@@ -17,6 +25,7 @@ body {
     box-shadow: 0 0 10px rgba(0,0,0,0.1);
     width: 1000px;
     height: 500px;
+    position: relative; /* Añadir posición relativa para que no afecte a particles.js */
 }
 
 .task-creation, .task-list-container {
