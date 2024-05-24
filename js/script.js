@@ -7,6 +7,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const taskList = document.getElementById('task-list');
     const notificationSound = new Audio('/notifications/notification.mp3');
     const notificationSound2 = new Audio('/notifications/notificatioDelete.mp3');
+    const notificationSound3 = new Audio('/notifications/addTask.mp3');
 
     taskForm.addEventListener('submit', addTask);
     taskList.addEventListener('click', manageTask);
@@ -39,6 +40,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function createTaskElement(task) {
+        notificationSound3.play();
         const li = document.createElement('li');
         li.className = task.priority;
         li.innerHTML = `
