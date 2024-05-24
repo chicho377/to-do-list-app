@@ -52,7 +52,7 @@ form {
 }
 
 form input, form select, form button {
-    margin: 18px 0;
+    margin: 12px 0;
     padding: 10px;
     border: 1px solid #ddd;
     border-radius: 4px;
@@ -143,6 +143,15 @@ button.edit {
 
 button.delete {
     color: red;
+}
+
+.task-details {
+    display: flex;
+    flex-direction: column;
+}
+
+.task-details span {
+    margin: 2px 0;
 }
 
 @keyframes fadeInOut {

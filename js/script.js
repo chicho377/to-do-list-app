@@ -2,6 +2,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const taskForm = document.getElementById('task-form');
     const taskInput = document.getElementById('task-input');
     const dueDateInput = document.getElementById('due-date-input');
+    const dueTimeInput = document.getElementById('due-time-input');
     const priorityInput = document.getElementById('priority-input');
     const categoryInput = document.getElementById('category-input');
     const taskList = document.getElementById('task-list');
@@ -16,6 +17,7 @@ document.addEventListener('DOMContentLoaded', () => {
         e.preventDefault();
         const taskText = taskInput.value;
         const dueDate = dueDateInput.value;
+        const dueTime = dueTimeInput.value;
         const priority = priorityInput.value;
         const category = categoryInput.value;
 
@@ -24,6 +26,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const task = {
             text: taskText,
             dueDate: dueDate,
+            dueTime: dueTime,
             priority: priority,
             category: category,
             completed: false
@@ -35,6 +38,7 @@ document.addEventListener('DOMContentLoaded', () => {
         storeTaskInLocalStorage(task);
         taskInput.value = '';
         dueDateInput.value = '';
+        dueTimeInput.value = '';
         priorityInput.value = 'Baja';
         categoryInput.value = '';
     }
@@ -44,12 +48,13 @@ document.addEventListener('DOMContentLoaded', () => {
         const li = document.createElement('li');
         li.className = task.priority;
         li.innerHTML = `
-            <div>
+            <div class="task-details">
                 <input type="checkbox" class="checkbox"> 
                 <span class="task-text">${task.text}</span>
-                ${task.dueDate ? `<span class="due-date">${task.dueDate}</span>` : ''}
-                ${task.priority ? `<span class="priority">${task.priority}</span>` : ''}
-                ${task.category ? `<span class="category">${task.category}</span>` : ''}
+                ${task.dueDate ? `<span class="due-date">Fecha: ${task.dueDate}</span>` : ''}
+                ${task.dueTime ? `<span class="due-time">Hora: ${task.dueTime}</span>` : ''}
+                ${task.priority ? `<span class="priority">Prioridad: ${task.priority}</span>` : ''}
+                ${task.category ? `<span class="category">Categoría: ${task.category}</span>` : ''}
             </div>
             <div>
                 <button class="edit">✏️</button>
@@ -90,6 +95,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         taskInput.value = task.text;
         dueDateInput.value = task.dueDate;
+        dueTimeInput.value = task.dueTime;
         priorityInput.value = task.priority;
         categoryInput.value = task.category;
 
