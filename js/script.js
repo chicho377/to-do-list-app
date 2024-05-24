@@ -2,7 +2,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const taskForm = document.getElementById('task-form');
     const taskInput = document.getElementById('task-input');
     const taskList = document.getElementById('task-list');
-    const notificationSound = new Audio('notification.mp3'); // Asegúrate de tener un archivo de sonido en tu proyecto
+    const notificationSound = new Audio('notification.mp3'); 
 
     taskForm.addEventListener('submit', addTask);
     taskList.addEventListener('click', manageTask);
