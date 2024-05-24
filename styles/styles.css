@@ -9,11 +9,28 @@ body {
 }
 
 .container {
+    display: flex;
+    justify-content: space-between;
+    background-color: white;
+    padding: 5px;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    width: 1000px;
+    height: 500px;
+}
+
+.task-creation, .task-list-container {
     background-color: white;
     padding: 20px;
     border-radius: 8px;
-    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    box-shadow: 0 0 10px rgb(82 231 17 / 10%);
     width: 400px;
+    margin: 0 10px;
+    overflow: auto;
+}
+
+.task-creation h1, .task-list-container h1 {
+    text-align: center;
 }
 
 h1 {
@@ -26,7 +43,7 @@ form {
 }
 
 form input, form select, form button {
-    margin: 5px 0;
+    margin: 18px 0;
     padding: 10px;
     border: 1px solid #ddd;
     border-radius: 4px;
