@@ -5,9 +5,9 @@ document.addEventListener('DOMContentLoaded', () => {
     const priorityInput = document.getElementById('priority-input');
     const categoryInput = document.getElementById('category-input');
     const taskList = document.getElementById('task-list');
-    const notificationSound = new Audio('/notifications/notification.mp3');
-    const notificationSound2 = new Audio('/notifications/notificatioDelete.mp3');
-    const notificationSound3 = new Audio('/notifications/addTask.mp3');
+    const notificationComplete = new Audio('/notifications/notification.mp3');
+    const notificationDelete = new Audio('/notifications/notificatioDelete.mp3');
+    const notificationAdd = new Audio('/notifications/addTask.mp3');
 
     taskForm.addEventListener('submit', addTask);
     taskList.addEventListener('click', manageTask);
@@ -40,7 +40,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function createTaskElement(task) {
-        notificationSound3.play();
+        notificationAdd.play();
         const li = document.createElement('li');
         li.className = task.priority;
         li.innerHTML = `
@@ -67,7 +67,7 @@ document.addEventListener('DOMContentLoaded', () => {
             if (e.target.classList.contains('delete')) {
                 taskList.removeChild(li);
                 removeTaskFromLocalStorage(taskText);
-                notificationSound2.play();
+                notificationDelete.play();
                 showNotificationDelete('Tarea eliminada');
             } else if (e.target.classList.contains('edit')) {
                 editTask(li);
@@ -77,7 +77,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const completed = li.classList.contains('completed');
             updateTaskInLocalStorage(taskText, { completed });
             if (completed) {
-                notificationSound.play();
+                notificationComplete.play();
                 showNotification('Tarea completada');
                 setTimeout(() => taskList.removeChild(li), 1000);
             }
