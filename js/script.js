@@ -6,7 +6,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const categoryInput = document.getElementById('category-input');
     const taskList = document.getElementById('task-list');
     const notificationSound = new Audio('/notifications/notification.mp3');
-    const notificationSound2 = new Audio('/notifications/notificatioDelete.mp3'); 
+    const notificationSound2 = new Audio('/notifications/notificatioDelete.mp3');
 
     taskForm.addEventListener('submit', addTask);
     taskList.addEventListener('click', manageTask);
@@ -40,6 +40,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function createTaskElement(task) {
         const li = document.createElement('li');
+        li.className = task.priority;
         li.innerHTML = `
             <div>
                 <input type="checkbox" class="checkbox"> 
@@ -49,8 +50,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 ${task.category ? `<span class="category">${task.category}</span>` : ''}
             </div>
             <div>
-                <button class="edit">Editar</button>
-                <button class="delete">Eliminar</button>
+                <button class="edit">✏️</button>
+                <button class="delete">🗑️</button>
             </div>
         `;
         return li;

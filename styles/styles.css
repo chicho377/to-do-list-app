@@ -74,6 +74,41 @@ li {
     border-radius: 4px;
 }
 
+/* Estilos según prioridad */
+.low {
+    border-left: 5px solid green;
+}
+
+.medium {
+    border-left: 5px solid orange;
+}
+
+.high {
+    border-left: 5px solid red;
+}
+
+/* Estilos para botones de editar y eliminar */
+button.edit, button.delete {
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 5px;
+    margin-left: 5px;
+}
+
+button.edit:hover, button.delete:hover {
+    background-color: #ddd;
+    border-radius: 4px;
+}
+
+button.edit {
+    color: blue;
+}
+
+button.delete {
+    color: red;
+}
+
 @keyframes fadeInOut {
     0% { opacity: 0; }
     10% { opacity: 1; }
