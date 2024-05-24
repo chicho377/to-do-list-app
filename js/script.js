@@ -16,7 +16,7 @@ document.addEventListener('DOMContentLoaded', () => {
         li.innerHTML = `<input type="checkbox" class="checkbox"> ${taskText} <button>Eliminar</button>`;
         taskList.appendChild(li);
 
-        storeTaskInLocalStorage(taskText);
+        storeTaskInLocalStorage({ text: taskText, completed: false });
         taskInput.value = '';
     }
 
@@ -24,22 +24,27 @@ document.addEventListener('DOMContentLoaded', () => {
         if (e.target.tagName === 'BUTTON') {
             const li = e.target.parentElement;
             taskList.removeChild(li);
-            removeTaskFromLocalStorage(li);
+            removeTaskFromLocalStorage(li.firstChild.nextSibling.textContent.trim());
+            notificationSound.play();
+            showNotification('Tarea eliminada');
         } else if (e.target.classList.contains('checkbox')) {
             const li = e.target.parentElement;
             li.classList.toggle('completed');
+            const taskText = li.firstChild.nextSibling.textContent.trim();
             if (li.classList.contains('completed')) {
                 notificationSound.play();
                 showNotification('Tarea completada');
                 taskList.removeChild(li);
-                removeTaskFromLocalStorage(li);
+                removeTaskFromLocalStorage(taskText);
+            } else {
+                updateTaskInLocalStorage(taskText, false);
             }
         }
     }
 
     function storeTaskInLocalStorage(task) {
         let tasks = getTasksFromLocalStorage();
-        tasks.push({ text: task, completed: false });
+        tasks.push(task);
         localStorage.setItem('tasks', JSON.stringify(tasks));
     }
 
@@ -53,9 +58,20 @@ document.addEventListener('DOMContentLoaded', () => {
         return tasks;
     }
 
-    function removeTaskFromLocalStorage(taskItem) {
+    function removeTaskFromLocalStorage(taskText) {
         let tasks = getTasksFromLocalStorage();
-        tasks = tasks.filter(task => task.text !== taskItem.textContent.trim());
+        tasks = tasks.filter(task => task.text !== taskText);
+        localStorage.setItem('tasks', JSON.stringify(tasks));
+    }
+
+    function updateTaskInLocalStorage(taskText, completed) {
+        let tasks = getTasksFromLocalStorage();
+        tasks = tasks.map(task => {
+            if (task.text === taskText) {
+                task.completed = completed;
+            }
+            return task;
+        });
         localStorage.setItem('tasks', JSON.stringify(tasks));
     }
 
@@ -72,12 +88,11 @@ document.addEventListener('DOMContentLoaded', () => {
     function loadTasks() {
         let tasks = getTasksFromLocalStorage();
         tasks.forEach(task => {
-            const li = document.createElement('li');
-            li.innerHTML = `<input type="checkbox" class="checkbox" ${task.completed ? 'checked' : ''}> ${task.text} <button>Eliminar</button>`;
-            if (task.completed) {
-                li.classList.add('completed');
+            if (!task.completed) {  // Solo cargar tareas que no estén completadas
+                const li = document.createElement('li');
+                li.innerHTML = `<input type="checkbox" class="checkbox"> ${task.text} <button>Eliminar</button>`;
+                taskList.appendChild(li);
             }
-            taskList.appendChild(li);
         });
     }
 
