@@ -204,6 +204,15 @@ button.expand:hover {
     border-radius: 4px;
 }
 
+.task-category {
+    padding: 3px 8px;
+    border-radius: 5px;
+    font-size: 0.9em;
+    margin-left: 10px;
+    display: inline-block;
+    color: #fff; /* Ajustar color de texto para visibilidad */
+}
+
 @keyframes fadeInOut {
     0% { opacity: 0; }
     10% { opacity: 1; }

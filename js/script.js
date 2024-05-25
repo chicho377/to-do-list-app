@@ -5,6 +5,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const dueTimeInput = document.getElementById('due-time-input');
     const priorityInput = document.getElementById('priority-input');
     const categoryInput = document.getElementById('category-input');
+    const categoryColorInput = document.getElementById('category-color-input');
     const subtaskInput = document.getElementById('subtask-input');
     const taskList = document.getElementById('task-list');
     const notificationComplete = new Audio('/notifications/notification.mp3');
@@ -21,6 +22,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const dueTime = dueTimeInput.value;
         const priority = priorityInput.value;
         const category = categoryInput.value;
+        const categoryColor = categoryColorInput.value;
         const subtaskText = subtaskInput.value;
 
         if (taskText === '') return;
@@ -33,6 +35,7 @@ document.addEventListener('DOMContentLoaded', () => {
             dueTime: dueTime,
             priority: priority,
             category: category,
+            categoryColor: categoryColor,
             subtasks: subtasks.map(subtask => ({ text: subtask, completed: false })),
             completed: false
         };
@@ -46,6 +49,7 @@ document.addEventListener('DOMContentLoaded', () => {
         dueTimeInput.value = '';
         priorityInput.value = 'Baja';
         categoryInput.value = '';
+        categoryColorInput.value = '#A9A9A9';
         subtaskInput.value = '';
     }
 
@@ -57,13 +61,13 @@ document.addEventListener('DOMContentLoaded', () => {
             <div class="task-header">
                 <input type="checkbox" class="checkbox"> 
                 <span class="task-text">${task.text}</span>
+                <span class="task-category" style="background-color: ${task.categoryColor};">${task.category}</span>
                 <button class="expand">🔽</button>
             </div>
             <div class="task-details">
                 ${task.dueDate ? `<span class="due-date">Fecha: ${task.dueDate}</span>` : ''}
                 ${task.dueTime ? `<span class="due-time">Hora: ${task.dueTime}</span>` : ''}
                 ${task.priority ? `<span class="priority">Prioridad: ${task.priority}</span>` : ''}
-                ${task.category ? `<span class="category">Categoría: ${task.category}</span>` : ''}
                 ${task.subtasks.length > 0 ? `<ul class="subtask-list">${task.subtasks.map(subtask => `
                     <li class="subtask">
                         <input type="checkbox" class="subtask-checkbox">
@@ -122,6 +126,7 @@ document.addEventListener('DOMContentLoaded', () => {
         dueTimeInput.value = task.dueTime;
         priorityInput.value = task.priority;
         categoryInput.value = task.category;
+        categoryColorInput.value = task.categoryColor;
         subtaskInput.value = task.subtasks.map(subtask => subtask.text).join(', ');
 
         taskList.removeChild(li);
@@ -180,7 +185,7 @@ document.addEventListener('DOMContentLoaded', () => {
     function showNotification(message) {
         const notification = document.createElement('div');
         notification.className = 'notification';
-        notification.textContent = message;
+        notification.innerText = message;
         document.body.appendChild(notification);
         setTimeout(() => {
             document.body.removeChild(notification);
@@ -189,8 +194,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function showNotificationDelete(message) {
         const notification = document.createElement('div');
-        notification.className = 'notification-delete';
-        notification.textContent = message;
+        notification.className = 'notificationDelete';
+        notification.innerText = message;
         document.body.appendChild(notification);
         setTimeout(() => {
             document.body.removeChild(notification);
