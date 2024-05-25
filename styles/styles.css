@@ -26,6 +26,8 @@ body {
     width: 80%;
     max-width: 1200px;
     position: relative;
+    max-height: 80vh; 
+    overflow: hidden;
 }
 
 .task-creation, .task-list-container {
@@ -34,7 +36,8 @@ body {
     border-radius: 8px;
     box-shadow: 0 0 10px rgb(82 231 17 / 10%);
     width: 45%;
-    margin: 0 10px;
+    margin: 0 9px;
+    max-height: 90%;
     overflow: auto;
 }
 
@@ -48,7 +51,7 @@ form {
 }
 
 form input, form select, form button {
-    margin: 10px 0;
+    margin: 7px 0;
     padding: 10px;
     border: 1px solid #ddd;
     border-radius: 4px;
@@ -168,6 +171,38 @@ button.expand:hover {
     margin: 2px 0;
 }
 
+.subtask-list {
+    margin-left: 20px;
+}
+
+.subtask {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.subtask .subtask-text {
+    flex-grow: 1;
+}
+
+.subtask.completed .subtask-text {
+    text-decoration: line-through;
+    color: gray;
+}
+
+.subtask-actions button {
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 5px;
+    margin-left: 5px;
+    font-size: 1em;
+}
+
+.subtask-actions button:hover {
+    background-color: #ddd;
+    border-radius: 4px;
+}
 
 @keyframes fadeInOut {
     0% { opacity: 0; }

@@ -5,6 +5,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const dueTimeInput = document.getElementById('due-time-input');
     const priorityInput = document.getElementById('priority-input');
     const categoryInput = document.getElementById('category-input');
+    const subtaskInput = document.getElementById('subtask-input');
     const taskList = document.getElementById('task-list');
     const notificationComplete = new Audio('/notifications/notification.mp3');
     const notificationDelete = new Audio('/notifications/notificatioDelete.mp3');
@@ -20,8 +21,11 @@ document.addEventListener('DOMContentLoaded', () => {
         const dueTime = dueTimeInput.value;
         const priority = priorityInput.value;
         const category = categoryInput.value;
+        const subtaskText = subtaskInput.value;
 
         if (taskText === '') return;
+
+        const subtasks = subtaskText.split(',').map(subtask => subtask.trim()).filter(subtask => subtask !== '');
 
         const task = {
             text: taskText,
@@ -29,6 +33,7 @@ document.addEventListener('DOMContentLoaded', () => {
             dueTime: dueTime,
             priority: priority,
             category: category,
+            subtasks: subtasks.map(subtask => ({ text: subtask, completed: false })),
             completed: false
         };
 
@@ -41,6 +46,7 @@ document.addEventListener('DOMContentLoaded', () => {
         dueTimeInput.value = '';
         priorityInput.value = 'Baja';
         categoryInput.value = '';
+        subtaskInput.value = '';
     }
 
     function createTaskElement(task) {
@@ -58,6 +64,12 @@ document.addEventListener('DOMContentLoaded', () => {
                 ${task.dueTime ? `<span class="due-time">Hora: ${task.dueTime}</span>` : ''}
                 ${task.priority ? `<span class="priority">Prioridad: ${task.priority}</span>` : ''}
                 ${task.category ? `<span class="category">Categoría: ${task.category}</span>` : ''}
+                ${task.subtasks.length > 0 ? `<ul class="subtask-list">${task.subtasks.map(subtask => `
+                    <li class="subtask">
+                        <input type="checkbox" class="subtask-checkbox">
+                        <span class="subtask-text">${subtask.text}</span>
+                    </li>
+                `).join('')}</ul>` : ''}
             </div>
             <div class="task-actions">
                 <button class="edit">✏️</button>
@@ -93,6 +105,11 @@ document.addEventListener('DOMContentLoaded', () => {
                 setTimeout(() => taskList.removeChild(li), 1000);
                 removeTaskFromLocalStorage(taskText);
             }
+        } else if (e.target.classList.contains('subtask-checkbox')) {
+            const subtaskLi = e.target.closest('.subtask');
+            subtaskLi.classList.toggle('completed');
+            const subtaskText = subtaskLi.querySelector('.subtask-text').textContent.trim();
+            updateSubtaskInLocalStorage(taskText, subtaskText, subtaskLi.classList.contains('completed'));
         }
     }
 
@@ -105,6 +122,7 @@ document.addEventListener('DOMContentLoaded', () => {
         dueTimeInput.value = task.dueTime;
         priorityInput.value = task.priority;
         categoryInput.value = task.category;
+        subtaskInput.value = task.subtasks.map(subtask => subtask.text).join(', ');
 
         taskList.removeChild(li);
         removeTaskFromLocalStorage(taskText);
@@ -143,33 +161,48 @@ document.addEventListener('DOMContentLoaded', () => {
         localStorage.setItem('tasks', JSON.stringify(tasks));
     }
 
+    function updateSubtaskInLocalStorage(taskText, subtaskText, completed) {
+        let tasks = getTasksFromLocalStorage();
+        tasks = tasks.map(task => {
+            if (task.text === taskText) {
+                task.subtasks = task.subtasks.map(subtask => {
+                    if (subtask.text === subtaskText) {
+                        return { ...subtask, completed };
+                    }
+                    return subtask;
+                });
+            }
+            return task;
+        });
+        localStorage.setItem('tasks', JSON.stringify(tasks));
+    }
+
     function showNotification(message) {
         const notification = document.createElement('div');
         notification.className = 'notification';
-        notification.innerText = message;
+        notification.textContent = message;
         document.body.appendChild(notification);
         setTimeout(() => {
-            notification.remove();
-        }, 3000);
+            document.body.removeChild(notification);
+        }, 2000);
     }
 
     function showNotificationDelete(message) {
         const notification = document.createElement('div');
-        notification.className = 'notificationDelete';
-        notification.innerText = message;
+        notification.className = 'notification-delete';
+        notification.textContent = message;
         document.body.appendChild(notification);
         setTimeout(() => {
-            notification.remove();
-        }, 3000);
+            document.body.removeChild(notification);
+        }, 2000);
     }
 
     function loadTasks() {
-        let tasks = getTasksFromLocalStorage();
+        const tasks = getTasksFromLocalStorage();
         tasks.forEach(task => {
             const li = createTaskElement(task);
             if (task.completed) {
                 li.classList.add('completed');
-                li.querySelector('.checkbox').checked = true;
             }
             taskList.appendChild(li);
         });
